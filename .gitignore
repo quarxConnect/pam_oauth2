@@ -1,0 +1,4 @@
+*.o
+*.so
+pam_oauth2
+pam_test
