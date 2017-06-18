@@ -33,7 +33,8 @@ struct pam_oauth2_token {
 };
 
 struct pam_oauth2_userinfo {
-  char *username;
+  char *desired_username;
+  char *original_username;
   char *scope;
 };
 

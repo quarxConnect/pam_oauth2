@@ -139,20 +139,18 @@ PAM_EXTERN int pam_sm_authenticate (pam_handle_t *pamh, int flags, int argc, con
     goto cleanup;
   }
   
-  /* Check if we found a username */
-  if (info->username != NULL) {
-    /* Compare username from token-introspection */
-    if (check_username) {
-      if (strcmp (info->username, username) != 0) {
-        PAM_OAUTH2_ERROR ("Usernames do not match");
-        result = PAM_AUTH_ERR;
-        goto cleanup;
-      }
-      
-    /* Forward the username */
-    } else
-      pam_set_item (pamh, PAM_USER, info->username);
+  /* Check username if required */
+  if (check_username &&
+      ((info->original_username == NULL) || (strcmp (info->original_username, username) != 0)) &&
+      ((info->desired_username == NULL) || (strcmp (info->desired_username, username) != 0))) {
+    PAM_OAUTH2_ERROR ("Usernames do not match");
+    result = PAM_AUTH_ERR;
+    goto cleanup;
   }
+  
+  /* Forward desired username if there is one */
+  if (info->desired_username != NULL)
+    pam_set_item (pamh, PAM_USER, info->desired_username);
   
   /* Store some internal settings */
   pam_set_data (pamh, "pam_oauth2_token", oauth_token, pam_oauth2_token_freep);
@@ -214,8 +212,8 @@ PAM_EXTERN int pam_sm_setcred (pam_handle_t *pamh, int flags, int argc, const ch
     }
     
     /* Check wheter to forward the username */
-    if (info->username != NULL)
-      pam_set_item (pamh, PAM_USER, info->username);
+    if (info->desired_username != NULL)
+      pam_set_item (pamh, PAM_USER, info->desired_username);
     
     result = PAM_SUCCESS;
   }

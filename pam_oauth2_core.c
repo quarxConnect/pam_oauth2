@@ -466,13 +466,19 @@ struct pam_oauth2_userinfo *pam_oauth2_userinfo (struct pam_oauth2_options *opti
       (node->type == json_string))
     result->scope = strdup (node->u.string.ptr);
   
-  /* Check for username */
+  /* Check for original username */
+  if (((node = pam_oauth2_json_get_name (root, "username")) != NULL) &&
+      (node->type == json_string))
+    result->original_username = strdup (node->u.string.ptr);
+  
+  /* Check for desired username */
   if ((options->username_path != NULL) &&
       ((node = pam_oauth2_json_path (root, options->username_path, strlen (options->username_path))) != NULL) &&
       (node->type == json_string))
-    result->username = strdup (node->u.string.ptr);
+    result->desired_username = strdup (node->u.string.ptr);
   
-  LDEBUG ("Username %s from %s\n", result->username, options->username_path);
+  LDEBUG ("Original username %s", result->original_username);
+  LDEBUG ("Desired username %s from %s\n", result->desired_username, options->username_path);
   LDEBUG ("Scopes %s, requred %s\n", result->scope, options->scope);
   
   /* Free the JSON-Structure */
@@ -485,8 +491,11 @@ void pam_oauth2_userinfo_free (struct pam_oauth2_userinfo *info) {
   if (info == NULL)
     return;
   
-  if (info->username != NULL)
-    free (info->username);
+  if (info->original_username != NULL)
+    free (info->original_username);
+  
+  if (info->desired_username != NULL)
+    free (info->desired_username);
   
   if (info->scope != NULL)
     free (info->scope);
