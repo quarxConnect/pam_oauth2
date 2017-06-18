@@ -20,7 +20,6 @@
  *   auth-password            Try to perform password-authentication
  *   auth-client              Try to perform client-authentication
  *                              using supplied username/password
- *   token-is-password        Use password as token for code/token-methods
  *   token-url={url}          Endpoint for Authentication (RFC 6749)
  *   revoke-url={url}         Endpoint for Token-Revocation (RFC 7009)
  *   introspection-url={url}  Endpoint for Token-Introspection
@@ -515,8 +514,6 @@ struct pam_oauth2_options *pam_oauth2_options_parse (int argc, const char **argv
       options->do_passwordauth = true;
     else if (strcmp (argv [opt], "auth-client") == 0)
       options->do_clientauth = true;
-    else if (strcmp (argv [opt], "token-is-password") == 0)
-      options->token_is_password = true;
     else if (strncmp (argv [opt], "client-username=", 16) == 0)
       options->client_username = strdup (argv [opt] + 16);
     else if (strncmp (argv [opt], "client-password=", 16) == 0)

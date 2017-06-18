@@ -71,6 +71,8 @@ pam_test	session		required	pam_oauth2.so	revoke-url={url} client-username={name}
 | auth-token              | Try to perform authentication using an already established token                              |
 | auth-password           | Try to perform authentication using password-authentication                                   |
 | auth-client             | Try to perform client-authentication (not using client-credentials from above)                |
-| token-is-password       | Use PAM-Authentication-Token for code-grant and token-authentication (otherwise use username) |
 | username-path={path}    | Try to extract actual username from introspection-response using this path                    |
 | scope={scope}           | Compare granted scopes on introspection-response with this scope. Fails if not present.       |
+
+Please not that `username-path` is required with using `auth-code` or
+`auth-token`.

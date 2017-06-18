@@ -19,7 +19,6 @@ struct pam_oauth2_options {
   char *client_password;
   char *username_path;
   char *scope;
-  bool token_is_password;
   bool do_codeauth;
   bool do_tokenauth;
   bool do_passwordauth;
